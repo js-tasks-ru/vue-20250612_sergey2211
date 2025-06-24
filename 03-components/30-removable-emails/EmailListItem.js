@@ -9,11 +9,6 @@ export default defineComponent({
       required: true,
     },
 
-    index: {
-      type: Number,
-      required: true
-    },
-
     marked: {
       type: Boolean,
       default: false,

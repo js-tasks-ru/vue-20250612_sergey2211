@@ -23,7 +23,6 @@ export default defineComponent({
         v-for="({ email, isMarked }, index) in emails"
         :key="email"
         :email="email"
-        :index="index"
         :marked="isMarked"
         @remove="$emit('remove', index)"
       />
