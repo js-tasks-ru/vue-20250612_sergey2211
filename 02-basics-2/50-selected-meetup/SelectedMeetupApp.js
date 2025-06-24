@@ -1,75 +1,79 @@
-import { defineComponent } from 'vue'
-// import { getMeetup } from './meetupsService.ts'
+import {defineComponent, onMounted, ref, watch} from 'vue'
+import { getMeetup } from './meetupsService.ts'
 
 export default defineComponent({
   name: 'SelectedMeetupApp',
 
-  setup() {},
+  setup() {
+    const selected = ref(1);
+    const min = 1;
+    const max = 5;
+    const meetupIdList = ref(Array.from({ length: max }, (_, k) => k + 1));
+    const title = ref('');
+
+    watch(selected, async () => {
+     title.value = (await getMeetup(selected.value)).title;
+    })
+
+    onMounted(async () => {
+      title.value = (await getMeetup(min)).title;
+    })
+
+    return {
+      selected,
+      meetupIdList,
+      max,
+      min,
+      title
+    }
+  },
 
   template: `
     <div class="meetup-selector">
       <div class="meetup-selector__control">
-        <button class="button button--secondary" type="button" disabled>Предыдущий</button>
+        <button
+          class="button button--secondary"
+          type="button"
+          :disabled="selected <= min"
+          @click="selected--"
+        >
+          Предыдущий
+        </button>
 
         <div class="radio-group" role="radiogroup">
-          <div class="radio-group__button">
+
+          <div v-for="meetupId in meetupIdList" class="radio-group__button">
             <input
-              id="meetup-id-1"
+              v-model="selected"
+              :id="'meetup-id-' + meetupId"
+              :value="meetupId"
               class="radio-group__input"
               type="radio"
               name="meetupId"
-              value="1"
+              @click="selected = meetupId"
             />
-            <label for="meetup-id-1" class="radio-group__label">1</label>
-          </div>
-          <div class="radio-group__button">
-            <input
-              id="meetup-id-2"
-              class="radio-group__input"
-              type="radio"
-              name="meetupId"
-              value="2"
-            />
-            <label for="meetup-id-2" class="radio-group__label">2</label>
-          </div>
-          <div class="radio-group__button">
-            <input
-              id="meetup-id-3"
-              class="radio-group__input"
-              type="radio"
-              name="meetupId"
-              value="3"
-            />
-            <label for="meetup-id-3" class="radio-group__label">3</label>
-          </div>
-          <div class="radio-group__button">
-            <input
-              id="meetup-id-4"
-              class="radio-group__input"
-              type="radio"
-              name="meetupId"
-              value="4"
-            />
-            <label for="meetup-id-4" class="radio-group__label">4</label>
-          </div>
-          <div class="radio-group__button">
-            <input
-              id="meetup-id-5"
-              class="radio-group__input"
-              type="radio"
-              name="meetupId"
-              value="5"
-            />
-            <label for="meetup-id-5" class="radio-group__label">5</label>
+            <label
+              :for="'meetup-id-' + meetupId"
+              class="radio-group__label"
+            >
+              {{ meetupId }}
+            </label>
           </div>
         </div>
 
-        <button class="button button--secondary" type="button">Следующий</button>
+        <button
+          :disabled="selected >= max"
+          class="button button--secondary"
+          type="button"
+          @click="selected++"
+        >
+          Следующий
+        </button>
       </div>
 
       <div class="meetup-selector__cover">
         <div class="meetup-cover">
-          <h1 class="meetup-cover__title">Some Meetup Title</h1>
+          <h1 class="meetup-cover__title"> {{ title }} </h1>
         </div>
       </div>
 
