@@ -15,13 +15,17 @@ export default defineComponent({
     },
   },
 
+  emits: ['remove'],
+
   template: `
     <ul class="emails-list unstyled-list" aria-label="Emails">
       <EmailListItem
         v-for="({ email, isMarked }, index) in emails"
         :key="email"
         :email="email"
+        :index="index"
         :marked="isMarked"
+        @remove="$emit('remove', index)"
       />
     </ul>
   `,
