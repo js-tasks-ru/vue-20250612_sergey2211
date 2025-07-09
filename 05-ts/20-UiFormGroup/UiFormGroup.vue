@@ -11,8 +11,8 @@ const props = defineProps<{
 }>() //не проходили тесты если не определял через const
 
 defineSlots<{
-  label?: Slot<string>,
-  description?: Slot<string>,
+  label?: Slot,
+  description?: Slot,
   default?: Slot
 }>()
 </script>
