@@ -13,22 +13,13 @@ const props = defineProps({
 })
 
 const type = computed(() => props.to ? 'RouterLink' : 'a');
-
-const link = computed(() => {
-  if(props.to) {
-    return {to: props.to}
-  }
-  else {
-    return {href: props.href}
-  }
-})
-
 </script>
 
 <template>
   <component
     :is="type"
-    v-bind="link"
+    :to="to"
+    :href="href"
     class="link"
   >
     <slot>
